@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar, RefreshCw, Tag } from "lucide-react";
 
 const POPULAR_TAGS = [
@@ -25,29 +25,28 @@ const POPULAR_TAGS = [
   "bed",
   "christmas",
   "stupid",
-];
+] as const;
 
-export default function CatApp() {
-  const [catKey, setCatKey] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [currentDate, setCurrentDate] = useState("");
-  const [selectedTag, setSelectedTag] = useState("");
+export default function CatApp(): React.ReactElement {
+  const [catKey, setCatKey] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [currentDate, setCurrentDate] = useState<string>("");
+  const [selectedTag, setSelectedTag] = useState<string>("");
 
-  const loadNewCat = () => {
+  const loadNewCat = (): void => {
     setLoading(true);
     setCatKey((prev) => prev + 1);
   };
 
-  const handleTagChange = (e) => {
+  const handleTagChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     setSelectedTag(e.target.value);
     setLoading(true);
     setCatKey((prev) => prev + 1);
   };
 
   useEffect(() => {
-    // Formatta la data in italiano
     const date = new Date();
-    const options = {
+    const options: Intl.DateTimeFormatOptions = {
       weekday: "long",
       year: "numeric",
       month: "long",
@@ -56,12 +55,11 @@ export default function CatApp() {
     setCurrentDate(date.toLocaleDateString("it-IT", options));
   }, []);
 
-  const catUrl = selectedTag ? `https://cataas.com/cat/${selectedTag}?t=${catKey}` : `https://cataas.com/cat?t=${catKey}`;
+  const catUrl: string = selectedTag ? `https://cataas.com/cat/${selectedTag}?t=${catKey}` : `https://cataas.com/cat?t=${catKey}`;
 
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-400 via-pink-500 to-red-500 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full">
-        {/* Header con data */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-3">
             <Calendar className="w-6 h-6 text-purple-600" />
@@ -70,7 +68,6 @@ export default function CatApp() {
           <p className="text-lg text-gray-600 capitalize">{currentDate}</p>
         </div>
 
-        {/* Selettore tag */}
         <div className="mb-6">
           <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
             <Tag className="w-4 h-4" />
@@ -90,7 +87,6 @@ export default function CatApp() {
           </select>
         </div>
 
-        {/* Container immagine gatto */}
         <div className="relative bg-gray-100 rounded-2xl overflow-hidden mb-6 h-96">
           {loading && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
@@ -101,13 +97,12 @@ export default function CatApp() {
             key={catKey}
             src={catUrl}
             alt={selectedTag ? `Random ${selectedTag} cat` : "Random cat"}
-            className={`w-full h-full object-contain transition-opacity duration-500 ${loading ? "opacity-0" : "opacity-100"}`}
+            className={`w-full h-full object-cover transition-opacity duration-500 ${loading ? "opacity-0" : "opacity-100"}`}
             onLoad={() => setLoading(false)}
             onError={() => setLoading(false)}
           />
         </div>
 
-        {/* Info tag selezionato */}
         {selectedTag && (
           <div className="mb-4 text-center">
             <span className="inline-flex items-center gap-1 px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
@@ -117,7 +112,6 @@ export default function CatApp() {
           </div>
         )}
 
-        {/* Bottone per nuovo gatto */}
         <button
           onClick={loadNewCat}
           disabled={loading}
@@ -127,7 +121,6 @@ export default function CatApp() {
           {loading ? "Caricamento..." : "Mostra un altro gatto"}
         </button>
 
-        {/* Footer info */}
         <div className="mt-6 text-center text-sm text-gray-500">
           <p>Per boki</p>
         </div>
